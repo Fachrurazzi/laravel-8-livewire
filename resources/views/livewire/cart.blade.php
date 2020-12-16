@@ -25,8 +25,13 @@
 		<div class="card">
 			<div class="card-body">
 				<h2 class="font-weight-bold mb-3">Cart List</h2>
-				<table class="table table-bordered table-hover table-striped table-sm">
-					<thead>
+				<p class="text-danger font-weight-bold">
+					@if (session()->has('error'))
+						*{{ session('error') }}
+					@endif
+				</p>
+				<table class="table table-bordered table-hover table-sm">
+					<thead class="bg-secondary text-white">
 						<tr>
 							<th>No</th>
 							<th>Name</th>
@@ -37,7 +42,15 @@
 						@forelse ($carts as $index=>$cart)
 							<tr>
 								<td>{{ $index + 1 }}</td>
-								<td>{{ $cart['name'] }} ||  {{ $cart['qty'] }}</td>
+								<td>
+									<a href="#" class="font-weight-bold text-dark">{{ $cart['name'] }}</a>
+									<br>
+									Qty: {{ $cart['qty'] }}
+									<a wire:click="increaseItem('{{ $cart['rowId'] }}')" class="btn btn-primary btn-sm font-weight-bold text-white">+</a>
+									<a wire:click="decreaseItem('{{ $cart['rowId'] }}')" class="btn btn-warning btn-sm font-weight-bold text-white">-</a>
+									<a wire:click="removeItem('{{ $cart['rowId'] }}')" class="btn btn-danger btn-sm font-weight-bold text-white">x</a>									
+
+								</td>
 								<td>{{ $cart['price'] }}</td>
 							</tr>						
 						@empty

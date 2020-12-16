@@ -98,4 +98,51 @@ class Cart extends Component
     {
     	$this->tax = "0%";	
     }    
+
+    public function increaseItem($rowId)
+    {
+    	$productId = substr($rowId, 4, 5);
+    	$product = ProductModel::find($productId);
+
+    	$cart = \Cart::session(Auth()->id())->getContent();
+
+    	$cekItem = $cart->whereIn('id', $rowId);
+
+    	if ($product->qty == $cekItem[$rowId]->quantity) {
+    		session()->flash('error', 'jumlah item kurang');
+    	} else {	    	
+			\Cart::session(Auth()->id())->update($rowId, [
+					'quantity' => [
+						'relative' => true,
+						'value' => 1
+					],
+			]);
+    	}
+    }
+
+    public function decreaseItem($rowId)
+    {
+    	$productId = substr($rowId, 4,5);
+    	$product = ProductModel::find($productId);
+
+    	$cart = \Cart::session(Auth()->id())->getContent();
+
+    	$cekItem = $cart->whereIn('id', $rowId);    	
+
+    	if($cekItem[$rowId]->quantity == 1) {
+    		$this->removeItem($rowId);
+    	} else {
+			\Cart::session(Auth()->id())->update($rowId, [
+					'quantity' => [
+						'relative' => true,
+						'value' => -1
+					],
+			]);
+    	}
+    }    
+
+    public function removeItem($rowId)
+    {
+		\Cart::session(Auth()->id())->remove($rowId);
+    }     
 }
